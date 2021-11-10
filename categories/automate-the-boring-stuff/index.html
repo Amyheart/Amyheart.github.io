@@ -1,19 +1,19 @@
 <!DOCTYPE html>
-<html lang="zh-cn" color-mode="light">
+<html lang="zh-CN" color-mode="light">
 
   <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="keywords" content="" />
   <meta name="author" content="Amy" />
-  <meta name="description" content="心之所愿，无事不成。&lt;br&gt; Nothing is impossible to a willing heart." />
+  <meta name="description" content="" />
   
   
   <title>
     
-      Tag 
-       : 表格
+      Category 
       
+       : automate the boring stuff
       |
     
      Amy&#39;s Blog
@@ -111,18 +111,27 @@
       <div class="flex-container">
         <!-- 标签详情页，展示某个标签下的文章列表，url形式：https://yoursite/tags/某个标签/ -->
 
-<div class="container tag-details">
+<div class="container category-details">
   <div class="content-title">
     <h2>
-      <span>表格</span>
+      <span>automate the boring stuff</span>
     </h2>
   </div>
   
     <div class="post-list">
-      <div class="post-item" title="Hello World 100">
+      <div class="post-item" title="一个猜数字的小游戏">
         <span class="time-m-d">2021-11-07</span>
-        <a href="/2021/11/07/hello-world%E7%9A%84%E5%89%AF%E6%9C%AC/">
-          <span>Hello World 100</span>
+        <a href="/2021/11/07/guess-the-number/">
+          <span>一个猜数字的小游戏</span>
+        </a>
+      </div>
+    </div>
+  
+    <div class="post-list">
+      <div class="post-item" title="井字棋小游戏">
+        <span class="time-m-d">2021-11-07</span>
+        <a href="/2021/11/07/ticTacToe/">
+          <span>井字棋小游戏</span>
         </a>
       </div>
     </div>
@@ -279,7 +288,7 @@
       'use strict';
       var $input = document.getElementById(search_id);
       var $resultContent = document.getElementById(content_id);
-      $resultContent.innerHTML = "<ul><span class='local-search-empty'>First search, index file loading, please wait...<span></ul>";
+      $resultContent.innerHTML = "<ul><span class='local-search-empty'>首次搜索，正在载入索引文件，请稍后……<span></ul>";
       $.ajax({
         // 0x01. load xml file
         url: path,
@@ -375,7 +384,7 @@
             });
             str += "</ul>";
             if (str.indexOf('<li>') === -1) {
-              return $resultContent.innerHTML = "<ul><span class='local-search-empty'>No result<span></ul>";
+              return $resultContent.innerHTML = "<ul><span class='local-search-empty'>没有找到内容，请尝试更换检索词。<span></ul>";
             }
             $resultContent.innerHTML = str;
           });
@@ -383,9 +392,9 @@
         error: function(xhr, status, error) {
           $resultContent.innerHTML = ""
           if (xhr.status === 404) {
-            $resultContent.innerHTML = "<ul><span class='local-search-empty'>The search.xml file was not found, please refer to：<a href='https://github.com/zchengsite/hexo-theme-oranges#configuration' target='_black'>configuration</a><span></ul>";
+            $resultContent.innerHTML = "<ul><span class='local-search-empty'>未找到search.xml文件，具体请参考：<a href='https://github.com/zchengsite/hexo-theme-oranges#configuration' target='_black'>configuration</a><span></ul>";
           } else {
-            $resultContent.innerHTML = "<ul><span class='local-search-empty'>The request failed, Try to refresh the page or try again later.<span></ul>";
+            $resultContent.innerHTML = "<ul><span class='local-search-empty'>请求失败，尝试重新刷新页面或稍后重试。<span></ul>";
           }
         }
       });

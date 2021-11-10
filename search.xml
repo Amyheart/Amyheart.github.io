@@ -4,23 +4,23 @@
   
     
     <entry>
-      <title>Hello World</title>
-      <link href="/2021/11/07/hello-world/"/>
-      <url>/2021/11/07/hello-world/</url>
+      <title>my first blog</title>
+      <link href="/2021/11/10/my-first-blog/"/>
+      <url>/2021/11/10/my-first-blog/</url>
       
-        <content type="html"><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p><h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p><h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p><h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p><h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>]]></content>
+        <content type="html"><![CDATA[]]></content>
       
       
       <categories>
           
-          <category> web前端 </category>
+          <category> 生活 </category>
           
       </categories>
       
       
         <tags>
             
-            <tag> html </tag>
+            <tag> 个人 </tag>
             
         </tags>
       
@@ -29,23 +29,48 @@
     
     
     <entry>
-      <title>Hello World 100</title>
-      <link href="/2021/11/07/hello-world%E7%9A%84%E5%89%AF%E6%9C%AC/"/>
-      <url>/2021/11/07/hello-world%E7%9A%84%E5%89%AF%E6%9C%AC/</url>
+      <title>一个猜数字的小游戏</title>
+      <link href="/2021/11/07/guess-the-number/"/>
+      <url>/2021/11/07/guess-the-number/</url>
       
-        <content type="html"><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p><h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p><h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p><h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p><h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>]]></content>
+        <content type="html"><![CDATA[<p>本系列是学习《automate the boring stuff with python》这本书的学习笔记。</p><h2 id="一个小程序：猜数字"><a href="#一个小程序：猜数字" class="headerlink" title="一个小程序：猜数字"></a>一个小程序：猜数字</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 这是一个猜数字的小游戏。</span></span><br><span class="line"><span class="keyword">import</span> random</span><br><span class="line">secretNumber = random.randint(<span class="number">1</span>, <span class="number">20</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;I am thinking of a number between 1 and 20.&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 让玩游戏的人猜6次数字。 </span></span><br><span class="line"><span class="keyword">for</span> guessesTaken <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, <span class="number">7</span>):</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&#x27;Take a guess.&#x27;</span>)</span><br><span class="line">    guess = <span class="built_in">int</span>(<span class="built_in">input</span>())</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> guess &lt; secretNumber: </span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&#x27;Your guess is too low.&#x27;</span>)</span><br><span class="line">    <span class="keyword">elif</span> guess &gt; secretNumber: </span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&#x27;Your guess is too high.&#x27;</span>)</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">break</span> <span class="comment"># This condition is the correct guess!</span></span><br><span class="line"><span class="keyword">if</span> guess == secretNumber:</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&#x27;Good job! You guessed my number in &#x27;</span> + <span class="built_in">str</span>(guessesTaken) + <span class="string">&#x27; guesses!&#x27;</span>)</span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&#x27;Nope. The number I was thinking of was &#x27;</span> + <span class="built_in">str</span>(secretNumber))</span><br></pre></td></tr></table></figure><h3 id="程序运行结果"><a href="#程序运行结果" class="headerlink" title="程序运行结果"></a>程序运行结果</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">I am thinking of a number between <span class="number">1</span> <span class="keyword">and</span> <span class="number">20.</span> Take a guess.</span><br><span class="line"><span class="number">10</span></span><br><span class="line">Your guess <span class="keyword">is</span> too low.</span><br><span class="line">Take a guess.</span><br><span class="line"><span class="number">15</span></span><br><span class="line">Your guess <span class="keyword">is</span> too low. Take a guess.</span><br><span class="line"><span class="number">17</span></span><br><span class="line">Your guess <span class="keyword">is</span> too high. Take a guess.</span><br><span class="line"><span class="number">16</span></span><br><span class="line">Good job! You guessed my number <span class="keyword">in</span> <span class="number">4</span> guesses!</span><br></pre></td></tr></table></figure>]]></content>
       
       
       <categories>
           
-          <category> web后端 </category>
+          <category> automate the boring stuff </category>
           
       </categories>
       
       
         <tags>
             
-            <tag> 表格 </tag>
+            <tag> 小游戏 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>井字棋小游戏</title>
+      <link href="/2021/11/07/ticTacToe/"/>
+      <url>/2021/11/07/ticTacToe/</url>
+      
+        <content type="html"><![CDATA[<p>本系列是学习《automate the boring stuff with python》这本书的学习笔记。</p><h2 id="一个小程序：井字棋"><a href="#一个小程序：井字棋" class="headerlink" title="一个小程序：井字棋"></a>一个小程序：井字棋</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">theBoard = &#123;</span><br><span class="line">    <span class="string">&#x27;top-L&#x27;</span>: <span class="string">&#x27; &#x27;</span>, <span class="string">&#x27;top-M&#x27;</span>: <span class="string">&#x27; &#x27;</span>, <span class="string">&#x27;top-R&#x27;</span>: <span class="string">&#x27; &#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;mid-L&#x27;</span>: <span class="string">&#x27; &#x27;</span>, <span class="string">&#x27;mid-M&#x27;</span>: <span class="string">&#x27; &#x27;</span>, <span class="string">&#x27;mid-R&#x27;</span>: <span class="string">&#x27; &#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;low-L&#x27;</span>: <span class="string">&#x27; &#x27;</span>, <span class="string">&#x27;low-M&#x27;</span>: <span class="string">&#x27; &#x27;</span>, <span class="string">&#x27;low-R&#x27;</span>: <span class="string">&#x27; &#x27;</span>&#125;</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">printBoard</span>(<span class="params">board</span>):</span></span><br><span class="line">    <span class="built_in">print</span>(board[<span class="string">&#x27;top-L&#x27;</span>] + <span class="string">&#x27;|&#x27;</span> + board[<span class="string">&#x27;top-M&#x27;</span>] + <span class="string">&#x27;|&#x27;</span> + board[<span class="string">&#x27;top-R&#x27;</span>])</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&#x27;-+-+-&#x27;</span>)</span><br><span class="line">    <span class="built_in">print</span>(board[<span class="string">&#x27;mid-L&#x27;</span>] + <span class="string">&#x27;|&#x27;</span> + board[<span class="string">&#x27;mid-M&#x27;</span>] + <span class="string">&#x27;|&#x27;</span> + board[<span class="string">&#x27;mid-R&#x27;</span>])</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&#x27;-+-+-&#x27;</span>)</span><br><span class="line">    <span class="built_in">print</span>(board[<span class="string">&#x27;low-L&#x27;</span>] + <span class="string">&#x27;|&#x27;</span> + board[<span class="string">&#x27;low-M&#x27;</span>] + <span class="string">&#x27;|&#x27;</span> + board[<span class="string">&#x27;low-R&#x27;</span>])</span><br><span class="line">turn = <span class="string">&#x27;X&#x27;</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">9</span>):</span><br><span class="line">    printBoard(theBoard)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&#x27;Turn for &#x27;</span> + turn + <span class="string">&#x27;. Move on which space?&#x27;</span>) </span><br><span class="line">    move = <span class="built_in">input</span>()</span><br><span class="line">    theBoard[move] = turn </span><br><span class="line">    <span class="keyword">if</span> turn == <span class="string">&#x27;X&#x27;</span>:</span><br><span class="line">        turn = <span class="string">&#x27;O&#x27;</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        turn = <span class="string">&#x27;X&#x27;</span></span><br><span class="line">printBoard(theBoard)</span><br></pre></td></tr></table></figure><h3 id="程序运行结果"><a href="#程序运行结果" class="headerlink" title="程序运行结果"></a>程序运行结果</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"> | | </span><br><span class="line">-+-+- </span><br><span class="line"> | | </span><br><span class="line">-+-+- </span><br><span class="line"> | | </span><br><span class="line">Turn <span class="keyword">for</span> X. Move on which space?</span><br><span class="line">mid-M</span><br><span class="line"> | | </span><br><span class="line">-+-+- </span><br><span class="line"> |X| </span><br><span class="line">-+-+- </span><br><span class="line"> | | </span><br></pre></td></tr></table></figure>]]></content>
+      
+      
+      <categories>
+          
+          <category> automate the boring stuff </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 小游戏 </tag>
             
         </tags>
       

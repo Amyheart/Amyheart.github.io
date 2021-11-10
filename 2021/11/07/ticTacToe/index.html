@@ -1,17 +1,17 @@
 <!DOCTYPE html>
-<html lang="zh-cn" color-mode="light">
+<html lang="zh-CN" color-mode="light">
 
   <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="keywords" content="" />
   <meta name="author" content="Amy" />
-  <meta name="description" content="心之所愿，无事不成。&lt;br&gt; Nothing is impossible to a willing heart." />
+  <meta name="description" content="" />
   
   
   <title>
     
-      Hello World 100 
+      井字棋小游戏 
       
       
       |
@@ -137,30 +137,30 @@ MathJax = {
   <!-- 文章内容页 url形式：https://yoursite/文章标题/ -->
   <div class="container post-details" id="post-details">
     <div class="post-content">
-      <div class="post-title">Hello World 100</div>
+      <div class="post-title">井字棋小游戏</div>
       <div class="post-attach">
         <span class="post-pubtime">
-          <i class="iconfont icon-updatetime" title="Update time"></i>
+          <i class="iconfont icon-updatetime" title="更新时间"></i>
           2021-11-07 20:54:18
         </span>
         
               <span class="post-categories">
-                <i class="iconfont icon-bookmark" title="Categories"></i>
+                <i class="iconfont icon-bookmark" title="分类"></i>
                 
                 <span class="span--category">
-                  <a href="/categories/web%E5%90%8E%E7%AB%AF/" title="web后端">
-                    <b>#</b> web后端
+                  <a href="/categories/automate-the-boring-stuff/" title="automate the boring stuff">
+                    <b>#</b> automate the boring stuff
                   </a>
                 </span>
                 
               </span>
           
               <span class="post-tags">
-                <i class="iconfont icon-tags" title="Tags"></i>
+                <i class="iconfont icon-tags" title="标签"></i>
                 
                 <span class="span--tag">
-                  <a href="/tags/%E8%A1%A8%E6%A0%BC/" title="表格">
-                    <b>#</b> 表格
+                  <a href="/tags/%E5%B0%8F%E6%B8%B8%E6%88%8F/" title="小游戏">
+                    <b>#</b> 小游戏
                   </a>
                 </span>
                 
@@ -168,19 +168,10 @@ MathJax = {
           
       </div>
       <div class="markdown-body">
-        <p>Welcome to <a target="_blank" rel="noopener" href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a target="_blank" rel="noopener" href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a target="_blank" rel="noopener" href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a target="_blank" rel="noopener" href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
+        <p>本系列是学习《automate the boring stuff with python》这本书的学习笔记。</p>
+<h2 id="一个小程序：井字棋"><a href="#一个小程序：井字棋" class="headerlink" title="一个小程序：井字棋"></a>一个小程序：井字棋</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">theBoard = &#123;</span><br><span class="line">    <span class="string">&#x27;top-L&#x27;</span>: <span class="string">&#x27; &#x27;</span>, <span class="string">&#x27;top-M&#x27;</span>: <span class="string">&#x27; &#x27;</span>, <span class="string">&#x27;top-R&#x27;</span>: <span class="string">&#x27; &#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;mid-L&#x27;</span>: <span class="string">&#x27; &#x27;</span>, <span class="string">&#x27;mid-M&#x27;</span>: <span class="string">&#x27; &#x27;</span>, <span class="string">&#x27;mid-R&#x27;</span>: <span class="string">&#x27; &#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;low-L&#x27;</span>: <span class="string">&#x27; &#x27;</span>, <span class="string">&#x27;low-M&#x27;</span>: <span class="string">&#x27; &#x27;</span>, <span class="string">&#x27;low-R&#x27;</span>: <span class="string">&#x27; &#x27;</span>&#125;</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">printBoard</span>(<span class="params">board</span>):</span></span><br><span class="line">    <span class="built_in">print</span>(board[<span class="string">&#x27;top-L&#x27;</span>] + <span class="string">&#x27;|&#x27;</span> + board[<span class="string">&#x27;top-M&#x27;</span>] + <span class="string">&#x27;|&#x27;</span> + board[<span class="string">&#x27;top-R&#x27;</span>])</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&#x27;-+-+-&#x27;</span>)</span><br><span class="line">    <span class="built_in">print</span>(board[<span class="string">&#x27;mid-L&#x27;</span>] + <span class="string">&#x27;|&#x27;</span> + board[<span class="string">&#x27;mid-M&#x27;</span>] + <span class="string">&#x27;|&#x27;</span> + board[<span class="string">&#x27;mid-R&#x27;</span>])</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&#x27;-+-+-&#x27;</span>)</span><br><span class="line">    <span class="built_in">print</span>(board[<span class="string">&#x27;low-L&#x27;</span>] + <span class="string">&#x27;|&#x27;</span> + board[<span class="string">&#x27;low-M&#x27;</span>] + <span class="string">&#x27;|&#x27;</span> + board[<span class="string">&#x27;low-R&#x27;</span>])</span><br><span class="line">turn = <span class="string">&#x27;X&#x27;</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">9</span>):</span><br><span class="line">    printBoard(theBoard)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&#x27;Turn for &#x27;</span> + turn + <span class="string">&#x27;. Move on which space?&#x27;</span>) </span><br><span class="line">    move = <span class="built_in">input</span>()</span><br><span class="line">    theBoard[move] = turn </span><br><span class="line">    <span class="keyword">if</span> turn == <span class="string">&#x27;X&#x27;</span>:</span><br><span class="line">        turn = <span class="string">&#x27;O&#x27;</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        turn = <span class="string">&#x27;X&#x27;</span></span><br><span class="line">printBoard(theBoard)</span><br></pre></td></tr></table></figure>
 
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/writing.html">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/server.html">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/generating.html">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
+<h3 id="程序运行结果"><a href="#程序运行结果" class="headerlink" title="程序运行结果"></a>程序运行结果</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"> | | </span><br><span class="line">-+-+- </span><br><span class="line"> | | </span><br><span class="line">-+-+- </span><br><span class="line"> | | </span><br><span class="line">Turn <span class="keyword">for</span> X. Move on which space?</span><br><span class="line">mid-M</span><br><span class="line"> | | </span><br><span class="line">-+-+- </span><br><span class="line"> |X| </span><br><span class="line">-+-+- </span><br><span class="line"> | | </span><br></pre></td></tr></table></figure>
 
       </div>
       
@@ -190,27 +181,27 @@ MathJax = {
           </div>
           <div class="post-attach">
             <span class="post-pubtime">
-              <i class="iconfont icon-updatetime" title="Update time"></i>
+              <i class="iconfont icon-updatetime" title="更新时间"></i>
               2021-11-07 20:54:18
             </span>
             
                   <span class="post-categories">
-                    <i class="iconfont icon-bookmark" title="Categories"></i>
+                    <i class="iconfont icon-bookmark" title="分类"></i>
                     
                     <span class="span--category">
-                      <a href="/categories/web%E5%90%8E%E7%AB%AF/" title="web后端">
-                        <b>#</b> web后端
+                      <a href="/categories/automate-the-boring-stuff/" title="automate the boring stuff">
+                        <b>#</b> automate the boring stuff
                       </a>
                     </span>
                     
                   </span>
               
                   <span class="post-tags">
-                    <i class="iconfont icon-tags" title="Tags"></i>
+                    <i class="iconfont icon-tags" title="标签"></i>
                     
                     <span class="span--tag">
-                      <a href="/tags/%E8%A1%A8%E6%A0%BC/" title="表格">
-                        <b>#</b> 表格
+                      <a href="/tags/%E5%B0%8F%E6%B8%B8%E6%88%8F/" title="小游戏">
+                        <b>#</b> 小游戏
                       </a>
                     </span>
                     
@@ -219,8 +210,8 @@ MathJax = {
           </div>
           <div class="post-foot-prev">
             
-              <a href="/2021/11/07/hello-world/" target="_self">
-                <span>Next</span>
+              <a href="/2021/11/07/guess-the-number/" target="_self">
+                <span>下一页</span>
                 <i class="iconfont icon-chevronright"></i>
               </a>
             
@@ -233,9 +224,9 @@ MathJax = {
     <i class="iconfont icon-catalog"></i>
   </div>
   <div class="post-catalog hidden" id="catalog">
-    <div class="title">Contents</div>
+    <div class="title">目录</div>
     <div class="catalog-content">
-      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Quick-Start"><span class="toc-text">Quick Start</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Create-a-new-post"><span class="toc-text">Create a new post</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Run-server"><span class="toc-text">Run server</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Generate-static-files"><span class="toc-text">Generate static files</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Deploy-to-remote-sites"><span class="toc-text">Deploy to remote sites</span></a></li></ol></li></ol>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E4%B8%AA%E5%B0%8F%E7%A8%8B%E5%BA%8F%EF%BC%9A%E4%BA%95%E5%AD%97%E6%A3%8B"><span class="toc-text">一个小程序：井字棋</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%A8%8B%E5%BA%8F%E8%BF%90%E8%A1%8C%E7%BB%93%E6%9E%9C"><span class="toc-text">程序运行结果</span></a></li></ol></li></ol>
     </div>
   </div>
 
@@ -261,7 +252,7 @@ MathJax = {
       appKey: 'OqM4F5aIp0EYNtAkopR3Mqly',
       placeholder: 'Welcome!',
       avatar: 'retro',
-      lang: 'zh-cn'
+      lang: 'zh-CN'
     })
   </script>
 
@@ -424,7 +415,7 @@ MathJax = {
       'use strict';
       var $input = document.getElementById(search_id);
       var $resultContent = document.getElementById(content_id);
-      $resultContent.innerHTML = "<ul><span class='local-search-empty'>First search, index file loading, please wait...<span></ul>";
+      $resultContent.innerHTML = "<ul><span class='local-search-empty'>首次搜索，正在载入索引文件，请稍后……<span></ul>";
       $.ajax({
         // 0x01. load xml file
         url: path,
@@ -520,7 +511,7 @@ MathJax = {
             });
             str += "</ul>";
             if (str.indexOf('<li>') === -1) {
-              return $resultContent.innerHTML = "<ul><span class='local-search-empty'>No result<span></ul>";
+              return $resultContent.innerHTML = "<ul><span class='local-search-empty'>没有找到内容，请尝试更换检索词。<span></ul>";
             }
             $resultContent.innerHTML = str;
           });
@@ -528,9 +519,9 @@ MathJax = {
         error: function(xhr, status, error) {
           $resultContent.innerHTML = ""
           if (xhr.status === 404) {
-            $resultContent.innerHTML = "<ul><span class='local-search-empty'>The search.xml file was not found, please refer to：<a href='https://github.com/zchengsite/hexo-theme-oranges#configuration' target='_black'>configuration</a><span></ul>";
+            $resultContent.innerHTML = "<ul><span class='local-search-empty'>未找到search.xml文件，具体请参考：<a href='https://github.com/zchengsite/hexo-theme-oranges#configuration' target='_black'>configuration</a><span></ul>";
           } else {
-            $resultContent.innerHTML = "<ul><span class='local-search-empty'>The request failed, Try to refresh the page or try again later.<span></ul>";
+            $resultContent.innerHTML = "<ul><span class='local-search-empty'>请求失败，尝试重新刷新页面或稍后重试。<span></ul>";
           }
         }
       });
@@ -571,12 +562,12 @@ MathJax = {
       </a>
       <div class="share-content hidden">
         
-          <a class="share-item" href="https://twitter.com/intent/tweet?text=' + Hello%20World%20100 + '&url=' + http%3A%2F%2Fexample.com%2F2021%2F11%2F07%2Fhello-world%25E7%259A%2584%25E5%2589%25AF%25E6%259C%25AC%2F + '" target="_blank" title="Twitter">
+          <a class="share-item" href="https://twitter.com/intent/tweet?text=' + %E4%BA%95%E5%AD%97%E6%A3%8B%E5%B0%8F%E6%B8%B8%E6%88%8F + '&url=' + http%3A%2F%2Fexample.com%2F2021%2F11%2F07%2FticTacToe%2F + '" target="_blank" title="Twitter">
             <i class="iconfont icon-twitter"></i>
           </a>
         
         
-          <a class="share-item" href="https://www.facebook.com/sharer.php?u=http://example.com/2021/11/07/hello-world%E7%9A%84%E5%89%AF%E6%9C%AC/" target="_blank" title="Facebook">
+          <a class="share-item" href="https://www.facebook.com/sharer.php?u=http://example.com/2021/11/07/ticTacToe/" target="_blank" title="Facebook">
             <i class="iconfont icon-facebooksquare"></i>
           </a>
         
