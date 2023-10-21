@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="zh-CN" color-mode="light">
+
+  <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="keywords" content="" />
+  <meta name="author" content="Amy" />
+  <meta name="description" content="" />
+  
+  
+  <title>
+    
+      如何修改onnx模型的batchsize和分类标签？ 
+      
+      
+      |
+    
+     Amy&#39;s Blog
+  </title>
+
+  
+    <link rel="apple-touch-icon" href="/images/favicon.png">
+    <link rel="icon" href="/images/favicon.png">
+  
+
+  <!-- Raleway-Font -->
+  <link href="https://fonts.googleapis.com/css?family=Raleway&display=swap" rel="stylesheet">
+
+  <!-- hexo site css -->
+  
+<link rel="stylesheet" href="/css/color-scheme.css">
+<link rel="stylesheet" href="/css/base.css">
+<link rel="stylesheet" href="/iconfont/iconfont.css">
+<link rel="stylesheet" href="/css/github-markdown.css">
+<link rel="stylesheet" href="/css/highlight.css">
+<link rel="stylesheet" href="/css/comments.css">
+
+
+  <!-- jquery3.3.1 -->
+  <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+
+  <!-- fancybox -->
+  <link href="https://cdn.bootcss.com/fancybox/3.5.2/jquery.fancybox.min.css" rel="stylesheet">
+  <script async src="https://cdn.bootcss.com/fancybox/3.5.2/jquery.fancybox.min.js"></script>
+  
+<script src="/js/fancybox.js"></script>
+
+
+  
+
+  <script>
+    var html = document.documentElement
+    const colorMode = localStorage.getItem('color-mode')
+    if (colorMode) {
+      document.documentElement.setAttribute('color-mode', colorMode)
+    }
+  </script>
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+  <body>
+    <div id="app">
+      <div class="header">
+  <div class="avatar">
+    <a href="/">
+      <!-- 头像取消懒加载，添加no-lazy -->
+      
+        <img src="/images/avatar.png" alt="">
+      
+    </a>
+    <div class="nickname"><a href="/">Amy's Blog</a></div>
+  </div>
+  <div class="navbar">
+    <ul>
+      
+        <li class="nav-item" data-path="/">
+          <a href="/">主页</a>
+        </li>
+      
+        <li class="nav-item" data-path="/archives/">
+          <a href="/archives/">归档</a>
+        </li>
+      
+        <li class="nav-item" data-path="/categories/">
+          <a href="/categories/">分类</a>
+        </li>
+      
+        <li class="nav-item" data-path="/tags/">
+          <a href="/tags/">标签</a>
+        </li>
+      
+        <li class="nav-item" data-path="/friends/">
+          <a href="/friends/">朋友</a>
+        </li>
+      
+        <li class="nav-item" data-path="/about/">
+          <a href="/about/">关于</a>
+        </li>
+      
+    </ul>
+  </div>
+</div>
+
+
+<script src="/js/activeNav.js"></script>
+
+
+
+      <div class="flex-container">
+        <!-- 文章详情页，展示文章具体内容，url形式：https://yoursite/文章标题/ -->
+<!-- 同时为「标签tag」，「朋友friend」，「分类categories」，「关于about」页面的承载页面，具体展示取决于page.type -->
+
+<!-- LaTex Display -->
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script type="text/javascript" id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js">
+</script>
+<script>
+MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\\(', '\\)']]
+  }
+};
+</script>
+
+
+
+  
+
+  
+
+  
+
+  
+  <!-- 文章内容页 url形式：https://yoursite/文章标题/ -->
+  <div class="container post-details" id="post-details">
+    <div class="post-content">
+      <div class="post-title">如何修改onnx模型的batchsize和分类标签？</div>
+      <div class="post-attach">
+        <span class="post-pubtime">
+          <i class="iconfont icon-updatetime" title="更新时间"></i>
+          2022-12-13 20:12:50
+        </span>
+        
+              <span class="post-categories">
+                <i class="iconfont icon-bookmark" title="分类"></i>
+                
+                <span class="span--category">
+                  <a href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" title="深度学习">
+                    <b>#</b> 深度学习
+                  </a>
+                </span>
+                
+              </span>
+          
+              <span class="post-tags">
+                <i class="iconfont icon-tags" title="标签"></i>
+                
+                <span class="span--tag">
+                  <a href="/tags/YOLO/" title="YOLO">
+                    <b>#</b> YOLO
+                  </a>
+                </span>
+                
+              </span>
+          
+      </div>
+      <div class="markdown-body">
+        <p>有时候，我们用netron查看一个onnx模，发现其batchsize=1、输入数据的尺寸固定。这种情况下，onnx模型无法进行多图同时推理、也无法兼容动态输入数据。这时，我们可以通过简单的代码改写onnx模型：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># onnx_to_n_batchsize</span></span><br><span class="line"><span class="keyword">import</span> onnx</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">change_input_dim</span>(<span class="params">model, </span>):</span></span><br><span class="line">    batch_size = <span class="string">&quot;16&quot;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># The following code changes the first dimension of every input to be batch_size</span></span><br><span class="line">    <span class="comment"># Modify as appropriate ... note that this requires all inputs to</span></span><br><span class="line">    <span class="comment"># have the same batch_size</span></span><br><span class="line">    inputs = model.graph.<span class="built_in">input</span></span><br><span class="line">    <span class="keyword">for</span> <span class="built_in">input</span> <span class="keyword">in</span> inputs:</span><br><span class="line">        <span class="comment"># Checks omitted.This assumes that all inputs are tensors and have a shape with first dim.</span></span><br><span class="line">        <span class="comment"># Add checks as needed.</span></span><br><span class="line">        dim1 = <span class="built_in">input</span>.<span class="built_in">type</span>.tensor_type.shape.dim[<span class="number">0</span>]</span><br><span class="line">        <span class="comment"># update dim to be a symbolic value</span></span><br><span class="line">        <span class="keyword">if</span> <span class="built_in">isinstance</span>(batch_size, <span class="built_in">str</span>):</span><br><span class="line">            <span class="comment"># set dynamic batch size</span></span><br><span class="line">            dim1.dim_param = batch_size</span><br><span class="line">        <span class="keyword">elif</span> (<span class="built_in">isinstance</span>(batch_size, <span class="built_in">str</span>) <span class="keyword">and</span> batch_size.isdigit()) <span class="keyword">or</span> <span class="built_in">isinstance</span>(batch_size, <span class="built_in">int</span>):</span><br><span class="line">            <span class="comment"># set given batch size</span></span><br><span class="line">            dim1.dim_value = <span class="built_in">int</span>(batch_size)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="comment"># set batch size of 1</span></span><br><span class="line">            dim1.dim_value = <span class="number">1</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">apply</span>(<span class="params">transform, infile, outfile</span>):</span></span><br><span class="line">    model = onnx.load(infile)</span><br><span class="line">    transform(model, )</span><br><span class="line">    onnx.save(model, outfile)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">apply(change_input_dim, <span class="string">&#x27;C:/mmdeploy/work_dir_onnx/end2end-sim.onnx&#x27;</span>,</span><br><span class="line">      <span class="string">&#x27;C:/mmdeploy/work_dir_onnx/end2end-sim-16input.onnx&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<p>以上代码中，batch_size等于数字时新onnx模型的batch_size变成相应的值，batch_size=”n”时新onnx模型的batch_size是动态的。</p>
+<p>一个onnx模型的分类标签有可能全是中文，有时候我们需要将标签转换为英文，这时，我们可以通过简单的代码改写onnx模型：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># onnx模型更新缺陷类别</span></span><br><span class="line"><span class="keyword">import</span> onnx</span><br><span class="line"></span><br><span class="line">onnx_model = onnx.load(<span class="string">&#x27;D:/PycharmProjects/yolov5-7.0/runs/train-seg/exp/weights/best.onnx&#x27;</span>)</span><br><span class="line">category_list = [<span class="string">&#x27;0&#x27;</span>, <span class="string">&#x27;1&#x27;</span>, <span class="string">&#x27;2&#x27;</span>, <span class="string">&#x27;3&#x27;</span>, <span class="string">&#x27;4&#x27;</span>, <span class="string">&#x27;5&#x27;</span>, <span class="string">&#x27;6&#x27;</span>, <span class="string">&#x27;7&#x27;</span>, <span class="string">&#x27;8&#x27;</span>, <span class="string">&#x27;9&#x27;</span>, <span class="string">&#x27;10&#x27;</span>, <span class="string">&#x27;11&#x27;</span>, <span class="string">&#x27;12&#x27;</span>]</span><br><span class="line">old_model_names = onnx_model.metadata_props[-<span class="number">1</span>].value</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;old_model_names:&#x27;</span>, old_model_names)</span><br><span class="line">onnx_model.metadata_props[-<span class="number">1</span>].value = <span class="built_in">str</span>(category_list).encode(<span class="string">&#x27;utf-8&#x27;</span>)</span><br><span class="line">onnx.save(onnx_model, <span class="string">&#x27;best-new.onnx&#x27;</span>)</span><br><span class="line">new_model = onnx.load(<span class="string">&#x27;best-new.onnx&#x27;</span>)</span><br><span class="line">new_model_names = onnx_model.metadata_props[-<span class="number">1</span>].value</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;new_model_names:&#x27;</span>, new_model_names)</span><br></pre></td></tr></table></figure>
+<p>代码运行结果：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">old_model_names: &#123;<span class="number">0</span>: <span class="string">&#x27;person&#x27;</span>, <span class="number">1</span>: <span class="string">&#x27;bicycle&#x27;</span>, <span class="number">2</span>: <span class="string">&#x27;car&#x27;</span>, <span class="number">3</span>: <span class="string">&#x27;motorcycle&#x27;</span>, <span class="number">4</span>: <span class="string">&#x27;airplane&#x27;</span>, <span class="number">5</span>: <span class="string">&#x27;bus&#x27;</span>, <span class="number">6</span>: <span class="string">&#x27;train&#x27;</span>, <span class="number">7</span>: <span class="string">&#x27;truck&#x27;</span>, <span class="number">8</span>: <span class="string">&#x27;boat&#x27;</span>, <span class="number">9</span>: <span class="string">&#x27;traffic light&#x27;</span>, <span class="number">10</span>: <span class="string">&#x27;fire hydrant&#x27;</span>, <span class="number">11</span>: <span class="string">&#x27;stop sign&#x27;</span>, <span class="number">12</span>: <span class="string">&#x27;parking meter&#x27;</span>, <span class="number">13</span>: <span class="string">&#x27;bench&#x27;</span>, <span class="number">14</span>: <span class="string">&#x27;bird&#x27;</span>, <span class="number">15</span>: <span class="string">&#x27;cat&#x27;</span>, <span class="number">16</span>: <span class="string">&#x27;dog&#x27;</span>, <span class="number">17</span>: <span class="string">&#x27;horse&#x27;</span>, <span class="number">18</span>: <span class="string">&#x27;sheep&#x27;</span>, <span class="number">19</span>: <span class="string">&#x27;cow&#x27;</span>, <span class="number">20</span>: <span class="string">&#x27;elephant&#x27;</span>, <span class="number">21</span>: <span class="string">&#x27;bear&#x27;</span>, <span class="number">22</span>: <span class="string">&#x27;zebra&#x27;</span>, <span class="number">23</span>: <span class="string">&#x27;giraffe&#x27;</span>, <span class="number">24</span>: <span class="string">&#x27;backpack&#x27;</span>, <span class="number">25</span>: <span class="string">&#x27;umbrella&#x27;</span>, <span class="number">26</span>: <span class="string">&#x27;handbag&#x27;</span>, <span class="number">27</span>: <span class="string">&#x27;tie&#x27;</span>, <span class="number">28</span>: <span class="string">&#x27;suitcase&#x27;</span>, <span class="number">29</span>: <span class="string">&#x27;frisbee&#x27;</span>, <span class="number">30</span>: <span class="string">&#x27;skis&#x27;</span>, <span class="number">31</span>: <span class="string">&#x27;snowboard&#x27;</span>, <span class="number">32</span>: <span class="string">&#x27;sports ball&#x27;</span>, <span class="number">33</span>: <span class="string">&#x27;kite&#x27;</span>, <span class="number">34</span>: <span class="string">&#x27;baseball bat&#x27;</span>, <span class="number">35</span>: <span class="string">&#x27;baseball glove&#x27;</span>, <span class="number">36</span>: <span class="string">&#x27;skateboard&#x27;</span>, <span class="number">37</span>: <span class="string">&#x27;surfboard&#x27;</span>, <span class="number">38</span>: <span class="string">&#x27;tennis racket&#x27;</span>, <span class="number">39</span>: <span class="string">&#x27;bottle&#x27;</span>, <span class="number">40</span>: <span class="string">&#x27;wine glass&#x27;</span>, <span class="number">41</span>: <span class="string">&#x27;cup&#x27;</span>, <span class="number">42</span>: <span class="string">&#x27;fork&#x27;</span>, <span class="number">43</span>: <span class="string">&#x27;knife&#x27;</span>, <span class="number">44</span>: <span class="string">&#x27;spoon&#x27;</span>, <span class="number">45</span>: <span class="string">&#x27;bowl&#x27;</span>, <span class="number">46</span>: <span class="string">&#x27;banana&#x27;</span>, <span class="number">47</span>: <span class="string">&#x27;apple&#x27;</span>, <span class="number">48</span>: <span class="string">&#x27;sandwich&#x27;</span>, <span class="number">49</span>: <span class="string">&#x27;orange&#x27;</span>, <span class="number">50</span>: <span class="string">&#x27;broccoli&#x27;</span>, <span class="number">51</span>: <span class="string">&#x27;carrot&#x27;</span>, <span class="number">52</span>: <span class="string">&#x27;hot dog&#x27;</span>, <span class="number">53</span>: <span class="string">&#x27;pizza&#x27;</span>, <span class="number">54</span>: <span class="string">&#x27;donut&#x27;</span>, <span class="number">55</span>: <span class="string">&#x27;cake&#x27;</span>, <span class="number">56</span>: <span class="string">&#x27;chair&#x27;</span>, <span class="number">57</span>: <span class="string">&#x27;couch&#x27;</span>, <span class="number">58</span>: <span class="string">&#x27;potted plant&#x27;</span>, <span class="number">59</span>: <span class="string">&#x27;bed&#x27;</span>, <span class="number">60</span>: <span class="string">&#x27;dining table&#x27;</span>, <span class="number">61</span>: <span class="string">&#x27;toilet&#x27;</span>, <span class="number">62</span>: <span class="string">&#x27;tv&#x27;</span>, <span class="number">63</span>: <span class="string">&#x27;laptop&#x27;</span>, <span class="number">64</span>: <span class="string">&#x27;mouse&#x27;</span>, <span class="number">65</span>: <span class="string">&#x27;remote&#x27;</span>, <span class="number">66</span>: <span class="string">&#x27;keyboard&#x27;</span>, <span class="number">67</span>: <span class="string">&#x27;cell phone&#x27;</span>, <span class="number">68</span>: <span class="string">&#x27;microwave&#x27;</span>, <span class="number">69</span>: <span class="string">&#x27;oven&#x27;</span>, <span class="number">70</span>: <span class="string">&#x27;toaster&#x27;</span>, <span class="number">71</span>: <span class="string">&#x27;sink&#x27;</span>, <span class="number">72</span>: <span class="string">&#x27;refrigerator&#x27;</span>, <span class="number">73</span>: <span class="string">&#x27;book&#x27;</span>, <span class="number">74</span>: <span class="string">&#x27;clock&#x27;</span>, <span class="number">75</span>: <span class="string">&#x27;vase&#x27;</span>, <span class="number">76</span>: <span class="string">&#x27;scissors&#x27;</span>, <span class="number">77</span>: <span class="string">&#x27;teddy bear&#x27;</span>, <span class="number">78</span>: <span class="string">&#x27;hair drier&#x27;</span>, <span class="number">79</span>: <span class="string">&#x27;toothbrush&#x27;</span>&#125;</span><br><span class="line">new_model_names: [<span class="string">&#x27;0&#x27;</span>, <span class="string">&#x27;1&#x27;</span>, <span class="string">&#x27;2&#x27;</span>, <span class="string">&#x27;3&#x27;</span>, <span class="string">&#x27;4&#x27;</span>, <span class="string">&#x27;5&#x27;</span>, <span class="string">&#x27;6&#x27;</span>, <span class="string">&#x27;7&#x27;</span>, <span class="string">&#x27;8&#x27;</span>, <span class="string">&#x27;9&#x27;</span>, <span class="string">&#x27;10&#x27;</span>, <span class="string">&#x27;11&#x27;</span>, <span class="string">&#x27;12&#x27;</span>]</span><br></pre></td></tr></table></figure>
+
+      </div>
+      
+        <div class="prev-or-next">
+          <div class="post-foot-next">
+            
+              <a href="/2022/12/12/%E7%94%A8netron%E6%9F%A5%E7%9C%8B%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E6%A8%A1%E5%9E%8B%E7%9A%84%E7%BD%91%E7%BB%9C%E7%BB%93%E6%9E%84/" target="_self">
+                <i class="iconfont icon-chevronleft"></i>
+                <span>上一页</span>
+              </a>
+            
+          </div>
+          <div class="post-attach">
+            <span class="post-pubtime">
+              <i class="iconfont icon-updatetime" title="更新时间"></i>
+              2022-12-13 20:12:50
+            </span>
+            
+                  <span class="post-categories">
+                    <i class="iconfont icon-bookmark" title="分类"></i>
+                    
+                    <span class="span--category">
+                      <a href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" title="深度学习">
+                        <b>#</b> 深度学习
+                      </a>
+                    </span>
+                    
+                  </span>
+              
+                  <span class="post-tags">
+                    <i class="iconfont icon-tags" title="标签"></i>
+                    
+                    <span class="span--tag">
+                      <a href="/tags/YOLO/" title="YOLO">
+                        <b>#</b> YOLO
+                      </a>
+                    </span>
+                    
+                  </span>
+              
+          </div>
+          <div class="post-foot-prev">
+            
+              <a href="/2022/12/14/YOLOV5-7.0%E5%AE%9E%E4%BE%8B%E5%88%86%E5%89%B2pt%E6%A8%A1%E5%9E%8B%E6%8E%A8%E7%90%86%E7%AE%80%E5%8C%96%E6%B5%81%E7%A8%8B/" target="_self">
+                <span>下一页</span>
+                <i class="iconfont icon-chevronright"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+    </div>
+    
+
+    
+      <div class="comments-container">
+        
+
+
+  <script src='//unpkg.com/valine/dist/Valine.min.js'></script>
+
+  <div id="vcomments"></div>
+
+  <script>
+    new Valine({
+      el: '#vcomments',
+      appId: '62Bj7197P0Q51xbElmqWJtst-gzGzoHsz',
+      appKey: 'OqM4F5aIp0EYNtAkopR3Mqly',
+      placeholder: 'Welcome!',
+      avatar: 'retro',
+      lang: 'zh-CN'
+    })
+  </script>
+
+    <style>
+      .comments-container .v .vempty {
+        display: none!important;
+      }
+    </style>
+
+
+
+
+      </div>
+    
+  </div>
+
+
+        <div class="footer">
+  <div class="social">
+    <ul>
+      
+        <li>
+          <a title="github" href="">
+            <i class="iconfont icon-github"></i>
+          </a>
+        </li>
+      
+        <li>
+          <a title="email" href="">
+            <i class="iconfont icon-envelope"></i>
+          </a>
+        </li>
+      
+        <li>
+          <a title="facebook" href="">
+            <i class="iconfont icon-facebooksquare"></i>
+          </a>
+        </li>
+      
+        <li>
+          <a title="twitter" href="">
+            <i class="iconfont icon-twitter"></i>
+          </a>
+        </li>
+      
+        <li>
+          <a title="wechat" href="">
+            <i class="iconfont icon-wechat"></i>
+          </a>
+        </li>
+      
+        <li>
+          <a title="weibo" href="">
+            <i class="iconfont icon-weibo"></i>
+          </a>
+        </li>
+      
+        <li>
+          <a title="rss" href="/atom.xml">
+            <i class="iconfont icon-rss"></i>
+          </a>
+        </li>
+      
+    </ul>
+  </div>
+  
+    <div class="footer-more">
+      
+        Copyright © Amy 2021
+        
+    </div>
+  
+    <div class="footer-more">
+      
+        Theme by Oranges | Powered by Hexo
+        
+    </div>
+  
+</div>
+
+      </div>
+
+      <div class="tools-bar">
+        <div class="back-to-top tools-bar-item hidden">
+  <a href="javascript: void(0)">
+    <i class="iconfont icon-chevronup"></i>
+  </a>
+</div>
+
+
+<script src="/js/backtotop.js"></script>
+
+
+
+        
+  <div class="search-icon tools-bar-item" id="search-icon">
+    <a href="javascript: void(0)">
+      <i class="iconfont icon-search"></i>
+    </a>
+  </div>
+
+  <div class="search-overlay hidden">
+    <div class="search-content" tabindex="0">
+      <div class="search-title">
+        <span class="search-icon-input">
+          <a href="javascript: void(0)">
+            <i class="iconfont icon-search"></i>
+          </a>
+        </span>
+        
+          <input type="text" class="search-input" id="search-input" placeholder="搜索...">
+        
+        <span class="search-close-icon" id="search-close-icon">
+          <a href="javascript: void(0)">
+            <i class="iconfont icon-close"></i>
+          </a>
+        </span>
+      </div>
+      <div class="search-result" id="search-result"></div>
+    </div>
+  </div>
+
+  <script type="text/javascript">
+    var inputArea = document.querySelector("#search-input")
+    var searchOverlayArea = document.querySelector(".search-overlay")
+
+    inputArea.onclick = function() {
+      getSearchFile()
+      this.onclick = null
+    }
+
+    inputArea.onkeydown = function() {
+      if(event.keyCode == 13)
+        return false
+    }
+
+    function openOrHideSearchContent() {
+      let isHidden = searchOverlayArea.classList.contains('hidden')
+      if (isHidden) {
+        searchOverlayArea.classList.remove('hidden')
+        document.body.classList.add('hidden')
+        // inputArea.focus()
+      } else {
+        searchOverlayArea.classList.add('hidden')
+        document.body.classList.remove('hidden')
+      }
+    }
+
+    function blurSearchContent(e) {
+      if (e.target === searchOverlayArea) {
+        openOrHideSearchContent()
+      }
+    }
+
+    document.querySelector("#search-icon").addEventListener("click", openOrHideSearchContent, false)
+    document.querySelector("#search-close-icon").addEventListener("click", openOrHideSearchContent, false)
+    searchOverlayArea.addEventListener("click", blurSearchContent, false)
+
+    var searchFunc = function (path, search_id, content_id) {
+      'use strict';
+      var $input = document.getElementById(search_id);
+      var $resultContent = document.getElementById(content_id);
+      $resultContent.innerHTML = "<ul><span class='local-search-empty'>首次搜索，正在载入索引文件，请稍后……<span></ul>";
+      $.ajax({
+        // 0x01. load xml file
+        url: path,
+        dataType: "xml",
+        success: function (xmlResponse) {
+          // 0x02. parse xml file
+          var datas = $("entry", xmlResponse).map(function () {
+            return {
+              title: $("title", this).text(),
+              content: $("content", this).text(),
+              url: $("url", this).text()
+            };
+          }).get();
+          $resultContent.innerHTML = "";
+
+          $input.addEventListener('input', function () {
+            // 0x03. parse query to keywords list
+            var str = '<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length <= 0) {
+              return;
+            }
+            // 0x04. perform local searching
+            datas.forEach(function (data) {
+              var isMatch = true;
+              var content_index = [];
+              if (!data.title || data.title.trim() === '') {
+                data.title = "Untitled";
+              }
+              var orig_data_title = data.title.trim();
+              var data_title = orig_data_title.toLowerCase();
+              var orig_data_content = data.content.trim().replace(/<[^>]+>/g, "");
+              var data_content = orig_data_content.toLowerCase();
+              var data_url = data.url;
+              var index_title = -1;
+              var index_content = -1;
+              var first_occur = -1;
+              // only match artiles with not empty contents
+              if (data_content !== '') {
+                keywords.forEach(function (keyword, i) {
+                  index_title = data_title.indexOf(keyword);
+                  index_content = data_content.indexOf(keyword);
+
+                  if (index_title < 0 && index_content < 0) {
+                    isMatch = false;
+                  } else {
+                    if (index_content < 0) {
+                      index_content = 0;
+                    }
+                    if (i == 0) {
+                      first_occur = index_content;
+                    }
+                    // content_index.push({index_content:index_content, keyword_len:keyword_len});
+                  }
+                });
+              } else {
+                isMatch = false;
+              }
+              // 0x05. show search results
+              if (isMatch) {
+                str += "<li><a href='" + data_url + "' class='search-result-title'>" + orig_data_title + "</a>";
+                var content = orig_data_content;
+                if (first_occur >= 0) {
+                  // cut out 100 characters
+                  var start = first_occur - 20;
+                  var end = first_occur + 80;
+
+                  if (start < 0) {
+                    start = 0;
+                  }
+
+                  if (start == 0) {
+                    end = 100;
+                  }
+
+                  if (end > content.length) {
+                    end = content.length;
+                  }
+
+                  var match_content = content.substr(start, end);
+
+                  // highlight all keywords
+                  keywords.forEach(function (keyword) {
+                    var regS = new RegExp(keyword, "gi");
+                    match_content = match_content.replace(regS, "<span class=\"search-keyword\">" + keyword + "</span>");
+                  });
+
+                  str += "<p class=\"search-result-abstract\">" + match_content + "...</p>"
+                }
+                str += "</li>";
+              }
+            });
+            str += "</ul>";
+            if (str.indexOf('<li>') === -1) {
+              return $resultContent.innerHTML = "<ul><span class='local-search-empty'>没有找到内容，请尝试更换检索词。<span></ul>";
+            }
+            $resultContent.innerHTML = str;
+          });
+        },
+        error: function(xhr, status, error) {
+          $resultContent.innerHTML = ""
+          if (xhr.status === 404) {
+            $resultContent.innerHTML = "<ul><span class='local-search-empty'>未找到search.xml文件，具体请参考：<a href='https://github.com/zchengsite/hexo-theme-oranges#configuration' target='_black'>configuration</a><span></ul>";
+          } else {
+            $resultContent.innerHTML = "<ul><span class='local-search-empty'>请求失败，尝试重新刷新页面或稍后重试。<span></ul>";
+          }
+        }
+      });
+      $(document).on('click', '#search-close-icon', function() {
+        $('#search-input').val('');
+        $('#search-result').html('');
+      });
+    }
+
+    var getSearchFile = function() {
+        var path = "/search.xml";
+        searchFunc(path, 'search-input', 'search-result');
+    }
+  </script>
+
+
+
+
+        
+  <div class="tools-bar-item theme-icon" id="switch-color-scheme">
+    <a href="javascript: void(0)">
+      <i id="theme-icon" class="iconfont icon-moon"></i>
+    </a>
+  </div>
+
+  
+<script src="/js/colorscheme.js"></script>
+
+
+
+
+
+        
+  
+    <div class="share-icon tools-bar-item">
+      <a href="javascript: void(0)" id="share-icon">
+        <i class="iconfont iconshare"></i>
+      </a>
+      <div class="share-content hidden">
+        
+          <a class="share-item" href="https://twitter.com/intent/tweet?text=' + %E5%A6%82%E4%BD%95%E4%BF%AE%E6%94%B9onnx%E6%A8%A1%E5%9E%8B%E7%9A%84batchsize%E5%92%8C%E5%88%86%E7%B1%BB%E6%A0%87%E7%AD%BE%EF%BC%9F + '&url=' + http%3A%2F%2Fexample.com%2F2022%2F12%2F13%2F%25E5%25A6%2582%25E4%25BD%2595%25E4%25BF%25AE%25E6%2594%25B9onnx%25E6%25A8%25A1%25E5%259E%258B%25E7%259A%2584batchsize%25E5%2592%258C%25E5%2588%2586%25E7%25B1%25BB%25E6%25A0%2587%25E7%25AD%25BE%2F + '" target="_blank" title="Twitter">
+            <i class="iconfont icon-twitter"></i>
+          </a>
+        
+        
+          <a class="share-item" href="https://www.facebook.com/sharer.php?u=http://example.com/2022/12/13/%E5%A6%82%E4%BD%95%E4%BF%AE%E6%94%B9onnx%E6%A8%A1%E5%9E%8B%E7%9A%84batchsize%E5%92%8C%E5%88%86%E7%B1%BB%E6%A0%87%E7%AD%BE/" target="_blank" title="Facebook">
+            <i class="iconfont icon-facebooksquare"></i>
+          </a>
+        
+      </div>
+    </div>
+  
+  
+<script src="/js/shares.js"></script>
+
+
+
+      </div>
+    </div>
+  </body>
+</html>

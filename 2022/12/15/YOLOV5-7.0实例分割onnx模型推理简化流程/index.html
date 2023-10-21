@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="zh-CN" color-mode="light">
+
+  <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="keywords" content="" />
+  <meta name="author" content="Amy" />
+  <meta name="description" content="" />
+  
+  
+  <title>
+    
+      YOLOV5-7.0实例分割onnx模型推理简化流程 
+      
+      
+      |
+    
+     Amy&#39;s Blog
+  </title>
+
+  
+    <link rel="apple-touch-icon" href="/images/favicon.png">
+    <link rel="icon" href="/images/favicon.png">
+  
+
+  <!-- Raleway-Font -->
+  <link href="https://fonts.googleapis.com/css?family=Raleway&display=swap" rel="stylesheet">
+
+  <!-- hexo site css -->
+  
+<link rel="stylesheet" href="/css/color-scheme.css">
+<link rel="stylesheet" href="/css/base.css">
+<link rel="stylesheet" href="/iconfont/iconfont.css">
+<link rel="stylesheet" href="/css/github-markdown.css">
+<link rel="stylesheet" href="/css/highlight.css">
+<link rel="stylesheet" href="/css/comments.css">
+
+
+  <!-- jquery3.3.1 -->
+  <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+
+  <!-- fancybox -->
+  <link href="https://cdn.bootcss.com/fancybox/3.5.2/jquery.fancybox.min.css" rel="stylesheet">
+  <script async src="https://cdn.bootcss.com/fancybox/3.5.2/jquery.fancybox.min.js"></script>
+  
+<script src="/js/fancybox.js"></script>
+
+
+  
+
+  <script>
+    var html = document.documentElement
+    const colorMode = localStorage.getItem('color-mode')
+    if (colorMode) {
+      document.documentElement.setAttribute('color-mode', colorMode)
+    }
+  </script>
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+  <body>
+    <div id="app">
+      <div class="header">
+  <div class="avatar">
+    <a href="/">
+      <!-- 头像取消懒加载，添加no-lazy -->
+      
+        <img src="/images/avatar.png" alt="">
+      
+    </a>
+    <div class="nickname"><a href="/">Amy's Blog</a></div>
+  </div>
+  <div class="navbar">
+    <ul>
+      
+        <li class="nav-item" data-path="/">
+          <a href="/">主页</a>
+        </li>
+      
+        <li class="nav-item" data-path="/archives/">
+          <a href="/archives/">归档</a>
+        </li>
+      
+        <li class="nav-item" data-path="/categories/">
+          <a href="/categories/">分类</a>
+        </li>
+      
+        <li class="nav-item" data-path="/tags/">
+          <a href="/tags/">标签</a>
+        </li>
+      
+        <li class="nav-item" data-path="/friends/">
+          <a href="/friends/">朋友</a>
+        </li>
+      
+        <li class="nav-item" data-path="/about/">
+          <a href="/about/">关于</a>
+        </li>
+      
+    </ul>
+  </div>
+</div>
+
+
+<script src="/js/activeNav.js"></script>
+
+
+
+      <div class="flex-container">
+        <!-- 文章详情页，展示文章具体内容，url形式：https://yoursite/文章标题/ -->
+<!-- 同时为「标签tag」，「朋友friend」，「分类categories」，「关于about」页面的承载页面，具体展示取决于page.type -->
+
+<!-- LaTex Display -->
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script type="text/javascript" id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js">
+</script>
+<script>
+MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\\(', '\\)']]
+  }
+};
+</script>
+
+
+
+  
+
+  
+
+  
+
+  
+  <!-- 文章内容页 url形式：https://yoursite/文章标题/ -->
+  <div class="container post-details" id="post-details">
+    <div class="post-content">
+      <div class="post-title">YOLOV5-7.0实例分割onnx模型推理简化流程</div>
+      <div class="post-attach">
+        <span class="post-pubtime">
+          <i class="iconfont icon-updatetime" title="更新时间"></i>
+          2022-12-15 20:22:32
+        </span>
+        
+              <span class="post-categories">
+                <i class="iconfont icon-bookmark" title="分类"></i>
+                
+                <span class="span--category">
+                  <a href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" title="深度学习">
+                    <b>#</b> 深度学习
+                  </a>
+                </span>
+                
+              </span>
+          
+              <span class="post-tags">
+                <i class="iconfont icon-tags" title="标签"></i>
+                
+                <span class="span--tag">
+                  <a href="/tags/YOLO/" title="YOLO">
+                    <b>#</b> YOLO
+                  </a>
+                </span>
+                
+              </span>
+          
+      </div>
+      <div class="markdown-body">
+        <p>yolov5官方工程包含训练、推理、部署等众多代码，本文针对onnx模型的推理代码做了简化。代码需要依赖官方工程的utils包（即utils文件夹），建议在官方工程里测试使用。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># yolov5-7.0 onnx模型推理简化流程</span></span><br><span class="line"><span class="keyword">import</span> torch</span><br><span class="line"><span class="keyword">import</span> cv2</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">from</span> copy <span class="keyword">import</span> deepcopy</span><br><span class="line"><span class="keyword">import</span> onnxruntime <span class="keyword">as</span> ort</span><br><span class="line"><span class="keyword">from</span> utils.general <span class="keyword">import</span> non_max_suppression, scale_boxes</span><br><span class="line"><span class="keyword">from</span> utils.augmentations <span class="keyword">import</span> letterbox</span><br><span class="line"><span class="keyword">from</span> utils.segment.general <span class="keyword">import</span> masks2segments, process_mask, scale_image</span><br><span class="line"><span class="keyword">from</span> utils.plots <span class="keyword">import</span> colors</span><br><span class="line"></span><br><span class="line">model_path = <span class="string">&quot;D:/PycharmProjects/yolov5-7.0/yolov5s-seg.onnx&quot;</span></span><br><span class="line">img_path = <span class="string">&quot;./data/images/zidane.jpg&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 数据预处理</span></span><br><span class="line">img = cv2.imread(img_path)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;ori_img:&#x27;</span>, img.shape)</span><br><span class="line">ori_img = deepcopy(img)</span><br><span class="line">img = letterbox(img, new_shape=(<span class="number">640</span>, <span class="number">640</span>), stride=<span class="number">32</span>, auto=<span class="literal">True</span>)[<span class="number">0</span>]  <span class="comment"># padded resize</span></span><br><span class="line">img = np.ascontiguousarray(img.transpose((<span class="number">2</span>, <span class="number">0</span>, <span class="number">1</span>))[::-<span class="number">1</span>])  <span class="comment"># HWC to CHW, BGR to RGB,contiguous</span></span><br><span class="line"><span class="comment"># img = torch.from_numpy(img).to(&quot;cuda:0&quot;)  # ndarray to tensor</span></span><br><span class="line"><span class="comment"># img = img.float()  # uint8 to fp32</span></span><br><span class="line">img = img.astype(np.float32)</span><br><span class="line">img = img / <span class="number">255</span>  <span class="comment"># 0 - 255 to 0.0 - 1.0</span></span><br><span class="line"><span class="keyword">if</span> <span class="built_in">len</span>(img.shape) == <span class="number">3</span>:</span><br><span class="line">    img = img[<span class="literal">None</span>]  <span class="comment"># expand for batch dim</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 加载模型</span></span><br><span class="line">sess = ort.InferenceSession(model_path, providers=[<span class="string">&#x27;CUDAExecutionProvider&#x27;</span>])  <span class="comment"># &#x27;CPUExecutionProvider&#x27;</span></span><br><span class="line">input_name = sess.get_inputs()[<span class="number">0</span>].name</span><br><span class="line">output_name = [output.name <span class="keyword">for</span> output <span class="keyword">in</span> sess.get_outputs()]</span><br><span class="line"><span class="comment"># 推理</span></span><br><span class="line">outputs = sess.run(output_name, &#123;input_name: img&#125;)</span><br><span class="line"></span><br><span class="line">pred, proto = outputs[<span class="number">0</span>:<span class="number">2</span>]</span><br><span class="line">pred = torch.from_numpy(pred).to(<span class="string">&quot;cuda:0&quot;</span>)</span><br><span class="line">proto = torch.from_numpy(proto).to(<span class="string">&quot;cuda:0&quot;</span>)</span><br><span class="line"><span class="comment"># NMS</span></span><br><span class="line">pred = non_max_suppression(pred, conf_thres=<span class="number">0.25</span>, iou_thres=<span class="number">0.45</span>, max_det=<span class="number">1000</span>, nm=<span class="number">32</span>)</span><br><span class="line"><span class="comment"># 画图</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;resize_img:&#x27;</span>, img.shape)</span><br><span class="line">det = pred[<span class="number">0</span>]</span><br><span class="line">masks = process_mask(proto[<span class="number">0</span>], det[:, <span class="number">6</span>:], det[:, :<span class="number">4</span>], img.shape[<span class="number">2</span>:], upsample=<span class="literal">True</span>)  <span class="comment"># HWC</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 画mask</span></span><br><span class="line">img = torch.from_numpy(img).to(<span class="string">&quot;cuda:0&quot;</span>)</span><br><span class="line"><span class="keyword">if</span> <span class="built_in">len</span>(masks) == <span class="number">0</span>:</span><br><span class="line">    dst_img = img[<span class="number">0</span>].permute(<span class="number">1</span>, <span class="number">2</span>, <span class="number">0</span>).contiguous().cpu().numpy() * <span class="number">255</span></span><br><span class="line">colors = [colors(x, <span class="literal">True</span>) <span class="keyword">for</span> x <span class="keyword">in</span> det[:, <span class="number">5</span>]]</span><br><span class="line">colors = torch.tensor(colors, device=<span class="string">&quot;cuda:0&quot;</span>, dtype=torch.float32) / <span class="number">255.0</span></span><br><span class="line">colors = colors[:, <span class="literal">None</span>, <span class="literal">None</span>]  <span class="comment"># shape(n,1,1,3)</span></span><br><span class="line">masks = masks.unsqueeze(<span class="number">3</span>)  <span class="comment"># shape(n,h,w,1)</span></span><br><span class="line">masks_color = masks * (colors * <span class="number">0.5</span>)  <span class="comment"># shape(n,h,w,3)</span></span><br><span class="line"></span><br><span class="line">inv_alph_masks = (<span class="number">1</span> - masks * <span class="number">0.5</span>).cumprod(<span class="number">0</span>)  <span class="comment"># shape(n,h,w,1)</span></span><br><span class="line">mcs = (masks_color * inv_alph_masks).<span class="built_in">sum</span>(<span class="number">0</span>) * <span class="number">2</span>  <span class="comment"># mask color summand shape(n,h,w,3)</span></span><br><span class="line">dst_img = img[<span class="number">0</span>].flip(dims=[<span class="number">0</span>])  <span class="comment"># flip channel</span></span><br><span class="line">dst_img = dst_img.permute(<span class="number">1</span>, <span class="number">2</span>, <span class="number">0</span>).contiguous()  <span class="comment"># shape(h,w,3)</span></span><br><span class="line">dst_img = dst_img * inv_alph_masks[-<span class="number">1</span>] + mcs</span><br><span class="line">im_mask = (dst_img * <span class="number">255</span>).byte().cpu().numpy()</span><br><span class="line">dst_img = scale_image(dst_img.shape, im_mask, ori_img.shape)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 画box label score</span></span><br><span class="line">det[:, :<span class="number">4</span>] = scale_boxes(img.shape[<span class="number">2</span>:], det[:, :<span class="number">4</span>], ori_img.shape).<span class="built_in">round</span>()  <span class="comment"># rescale boxes to ori_img size</span></span><br><span class="line">det_cpu = pred[<span class="number">0</span>].cpu().numpy()</span><br><span class="line"><span class="keyword">for</span> i, item <span class="keyword">in</span> <span class="built_in">enumerate</span>(det_cpu):</span><br><span class="line">    <span class="comment"># 画box</span></span><br><span class="line">    box_int = item[<span class="number">0</span>:<span class="number">4</span>].astype(np.int32)</span><br><span class="line">    cv2.rectangle(dst_img, (box_int[<span class="number">0</span>], box_int[<span class="number">1</span>]), (box_int[<span class="number">2</span>], box_int[<span class="number">3</span>]), color=(<span class="number">0</span>, <span class="number">255</span>, <span class="number">0</span>), thickness=<span class="number">1</span>)</span><br><span class="line">    <span class="comment"># 画label</span></span><br><span class="line">    label = item[<span class="number">5</span>]</span><br><span class="line">    score = item[<span class="number">4</span>]</span><br><span class="line">    org = (<span class="built_in">min</span>(box_int[<span class="number">0</span>], box_int[<span class="number">2</span>]), <span class="built_in">min</span>(box_int[<span class="number">1</span>], box_int[<span class="number">3</span>]) - <span class="number">8</span>)</span><br><span class="line">    text = <span class="string">&#x27;&#123;&#125;|&#123;:.2f&#125;&#x27;</span>.<span class="built_in">format</span>(<span class="built_in">int</span>(label), score)</span><br><span class="line">    cv2.putText(dst_img, text, org=org, fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=<span class="number">0.5</span>, color=(<span class="number">0</span>, <span class="number">255</span>, <span class="number">0</span>),</span><br><span class="line">                thickness=<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">cv2.imshow(<span class="string">&#x27;result&#x27;</span>, dst_img)</span><br><span class="line">cv2.waitKey()</span><br><span class="line">cv2.imwrite(<span class="string">&#x27;out.jpg&#x27;</span>, dst_img)</span><br></pre></td></tr></table></figure>
+<p>推理结果图如下：</p>
+<p><img src="/images/yolo_out.png"></p>
+
+      </div>
+      
+        <div class="prev-or-next">
+          <div class="post-foot-next">
+            
+              <a href="/2022/12/14/YOLOV5-7.0%E5%AE%9E%E4%BE%8B%E5%88%86%E5%89%B2pt%E6%A8%A1%E5%9E%8B%E6%8E%A8%E7%90%86%E7%AE%80%E5%8C%96%E6%B5%81%E7%A8%8B/" target="_self">
+                <i class="iconfont icon-chevronleft"></i>
+                <span>上一页</span>
+              </a>
+            
+          </div>
+          <div class="post-attach">
+            <span class="post-pubtime">
+              <i class="iconfont icon-updatetime" title="更新时间"></i>
+              2022-12-15 20:22:32
+            </span>
+            
+                  <span class="post-categories">
+                    <i class="iconfont icon-bookmark" title="分类"></i>
+                    
+                    <span class="span--category">
+                      <a href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" title="深度学习">
+                        <b>#</b> 深度学习
+                      </a>
+                    </span>
+                    
+                  </span>
+              
+                  <span class="post-tags">
+                    <i class="iconfont icon-tags" title="标签"></i>
+                    
+                    <span class="span--tag">
+                      <a href="/tags/YOLO/" title="YOLO">
+                        <b>#</b> YOLO
+                      </a>
+                    </span>
+                    
+                  </span>
+              
+          </div>
+          <div class="post-foot-prev">
+            
+              <a href="/2022/12/16/YOLOV5%E5%AE%9E%E4%BE%8B%E5%88%86%E5%89%B2%EF%BC%9A%E7%94%A8TensorRT%E6%A8%A1%E5%9E%8B%E5%81%9A%E6%8E%A8%E7%90%86%E5%8A%A0%E9%80%9F/" target="_self">
+                <span>下一页</span>
+                <i class="iconfont icon-chevronright"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+    </div>
+    
+
+    
+      <div class="comments-container">
+        
+
+
+  <script src='//unpkg.com/valine/dist/Valine.min.js'></script>
+
+  <div id="vcomments"></div>
+
+  <script>
+    new Valine({
+      el: '#vcomments',
+      appId: '62Bj7197P0Q51xbElmqWJtst-gzGzoHsz',
+      appKey: 'OqM4F5aIp0EYNtAkopR3Mqly',
+      placeholder: 'Welcome!',
+      avatar: 'retro',
+      lang: 'zh-CN'
+    })
+  </script>
+
+    <style>
+      .comments-container .v .vempty {
+        display: none!important;
+      }
+    </style>
+
+
+
+
+      </div>
+    
+  </div>
+
+
+        <div class="footer">
+  <div class="social">
+    <ul>
+      
+        <li>
+          <a title="github" href="">
+            <i class="iconfont icon-github"></i>
+          </a>
+        </li>
+      
+        <li>
+          <a title="email" href="">
+            <i class="iconfont icon-envelope"></i>
+          </a>
+        </li>
+      
+        <li>
+          <a title="facebook" href="">
+            <i class="iconfont icon-facebooksquare"></i>
+          </a>
+        </li>
+      
+        <li>
+          <a title="twitter" href="">
+            <i class="iconfont icon-twitter"></i>
+          </a>
+        </li>
+      
+        <li>
+          <a title="wechat" href="">
+            <i class="iconfont icon-wechat"></i>
+          </a>
+        </li>
+      
+        <li>
+          <a title="weibo" href="">
+            <i class="iconfont icon-weibo"></i>
+          </a>
+        </li>
+      
+        <li>
+          <a title="rss" href="/atom.xml">
+            <i class="iconfont icon-rss"></i>
+          </a>
+        </li>
+      
+    </ul>
+  </div>
+  
+    <div class="footer-more">
+      
+        Copyright © Amy 2021
+        
+    </div>
+  
+    <div class="footer-more">
+      
+        Theme by Oranges | Powered by Hexo
+        
+    </div>
+  
+</div>
+
+      </div>
+
+      <div class="tools-bar">
+        <div class="back-to-top tools-bar-item hidden">
+  <a href="javascript: void(0)">
+    <i class="iconfont icon-chevronup"></i>
+  </a>
+</div>
+
+
+<script src="/js/backtotop.js"></script>
+
+
+
+        
+  <div class="search-icon tools-bar-item" id="search-icon">
+    <a href="javascript: void(0)">
+      <i class="iconfont icon-search"></i>
+    </a>
+  </div>
+
+  <div class="search-overlay hidden">
+    <div class="search-content" tabindex="0">
+      <div class="search-title">
+        <span class="search-icon-input">
+          <a href="javascript: void(0)">
+            <i class="iconfont icon-search"></i>
+          </a>
+        </span>
+        
+          <input type="text" class="search-input" id="search-input" placeholder="搜索...">
+        
+        <span class="search-close-icon" id="search-close-icon">
+          <a href="javascript: void(0)">
+            <i class="iconfont icon-close"></i>
+          </a>
+        </span>
+      </div>
+      <div class="search-result" id="search-result"></div>
+    </div>
+  </div>
+
+  <script type="text/javascript">
+    var inputArea = document.querySelector("#search-input")
+    var searchOverlayArea = document.querySelector(".search-overlay")
+
+    inputArea.onclick = function() {
+      getSearchFile()
+      this.onclick = null
+    }
+
+    inputArea.onkeydown = function() {
+      if(event.keyCode == 13)
+        return false
+    }
+
+    function openOrHideSearchContent() {
+      let isHidden = searchOverlayArea.classList.contains('hidden')
+      if (isHidden) {
+        searchOverlayArea.classList.remove('hidden')
+        document.body.classList.add('hidden')
+        // inputArea.focus()
+      } else {
+        searchOverlayArea.classList.add('hidden')
+        document.body.classList.remove('hidden')
+      }
+    }
+
+    function blurSearchContent(e) {
+      if (e.target === searchOverlayArea) {
+        openOrHideSearchContent()
+      }
+    }
+
+    document.querySelector("#search-icon").addEventListener("click", openOrHideSearchContent, false)
+    document.querySelector("#search-close-icon").addEventListener("click", openOrHideSearchContent, false)
+    searchOverlayArea.addEventListener("click", blurSearchContent, false)
+
+    var searchFunc = function (path, search_id, content_id) {
+      'use strict';
+      var $input = document.getElementById(search_id);
+      var $resultContent = document.getElementById(content_id);
+      $resultContent.innerHTML = "<ul><span class='local-search-empty'>首次搜索，正在载入索引文件，请稍后……<span></ul>";
+      $.ajax({
+        // 0x01. load xml file
+        url: path,
+        dataType: "xml",
+        success: function (xmlResponse) {
+          // 0x02. parse xml file
+          var datas = $("entry", xmlResponse).map(function () {
+            return {
+              title: $("title", this).text(),
+              content: $("content", this).text(),
+              url: $("url", this).text()
+            };
+          }).get();
+          $resultContent.innerHTML = "";
+
+          $input.addEventListener('input', function () {
+            // 0x03. parse query to keywords list
+            var str = '<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length <= 0) {
+              return;
+            }
+            // 0x04. perform local searching
+            datas.forEach(function (data) {
+              var isMatch = true;
+              var content_index = [];
+              if (!data.title || data.title.trim() === '') {
+                data.title = "Untitled";
+              }
+              var orig_data_title = data.title.trim();
+              var data_title = orig_data_title.toLowerCase();
+              var orig_data_content = data.content.trim().replace(/<[^>]+>/g, "");
+              var data_content = orig_data_content.toLowerCase();
+              var data_url = data.url;
+              var index_title = -1;
+              var index_content = -1;
+              var first_occur = -1;
+              // only match artiles with not empty contents
+              if (data_content !== '') {
+                keywords.forEach(function (keyword, i) {
+                  index_title = data_title.indexOf(keyword);
+                  index_content = data_content.indexOf(keyword);
+
+                  if (index_title < 0 && index_content < 0) {
+                    isMatch = false;
+                  } else {
+                    if (index_content < 0) {
+                      index_content = 0;
+                    }
+                    if (i == 0) {
+                      first_occur = index_content;
+                    }
+                    // content_index.push({index_content:index_content, keyword_len:keyword_len});
+                  }
+                });
+              } else {
+                isMatch = false;
+              }
+              // 0x05. show search results
+              if (isMatch) {
+                str += "<li><a href='" + data_url + "' class='search-result-title'>" + orig_data_title + "</a>";
+                var content = orig_data_content;
+                if (first_occur >= 0) {
+                  // cut out 100 characters
+                  var start = first_occur - 20;
+                  var end = first_occur + 80;
+
+                  if (start < 0) {
+                    start = 0;
+                  }
+
+                  if (start == 0) {
+                    end = 100;
+                  }
+
+                  if (end > content.length) {
+                    end = content.length;
+                  }
+
+                  var match_content = content.substr(start, end);
+
+                  // highlight all keywords
+                  keywords.forEach(function (keyword) {
+                    var regS = new RegExp(keyword, "gi");
+                    match_content = match_content.replace(regS, "<span class=\"search-keyword\">" + keyword + "</span>");
+                  });
+
+                  str += "<p class=\"search-result-abstract\">" + match_content + "...</p>"
+                }
+                str += "</li>";
+              }
+            });
+            str += "</ul>";
+            if (str.indexOf('<li>') === -1) {
+              return $resultContent.innerHTML = "<ul><span class='local-search-empty'>没有找到内容，请尝试更换检索词。<span></ul>";
+            }
+            $resultContent.innerHTML = str;
+          });
+        },
+        error: function(xhr, status, error) {
+          $resultContent.innerHTML = ""
+          if (xhr.status === 404) {
+            $resultContent.innerHTML = "<ul><span class='local-search-empty'>未找到search.xml文件，具体请参考：<a href='https://github.com/zchengsite/hexo-theme-oranges#configuration' target='_black'>configuration</a><span></ul>";
+          } else {
+            $resultContent.innerHTML = "<ul><span class='local-search-empty'>请求失败，尝试重新刷新页面或稍后重试。<span></ul>";
+          }
+        }
+      });
+      $(document).on('click', '#search-close-icon', function() {
+        $('#search-input').val('');
+        $('#search-result').html('');
+      });
+    }
+
+    var getSearchFile = function() {
+        var path = "/search.xml";
+        searchFunc(path, 'search-input', 'search-result');
+    }
+  </script>
+
+
+
+
+        
+  <div class="tools-bar-item theme-icon" id="switch-color-scheme">
+    <a href="javascript: void(0)">
+      <i id="theme-icon" class="iconfont icon-moon"></i>
+    </a>
+  </div>
+
+  
+<script src="/js/colorscheme.js"></script>
+
+
+
+
+
+        
+  
+    <div class="share-icon tools-bar-item">
+      <a href="javascript: void(0)" id="share-icon">
+        <i class="iconfont iconshare"></i>
+      </a>
+      <div class="share-content hidden">
+        
+          <a class="share-item" href="https://twitter.com/intent/tweet?text=' + YOLOV5-7.0%E5%AE%9E%E4%BE%8B%E5%88%86%E5%89%B2onnx%E6%A8%A1%E5%9E%8B%E6%8E%A8%E7%90%86%E7%AE%80%E5%8C%96%E6%B5%81%E7%A8%8B + '&url=' + http%3A%2F%2Fexample.com%2F2022%2F12%2F15%2FYOLOV5-7.0%25E5%25AE%259E%25E4%25BE%258B%25E5%2588%2586%25E5%2589%25B2onnx%25E6%25A8%25A1%25E5%259E%258B%25E6%258E%25A8%25E7%2590%2586%25E7%25AE%2580%25E5%258C%2596%25E6%25B5%2581%25E7%25A8%258B%2F + '" target="_blank" title="Twitter">
+            <i class="iconfont icon-twitter"></i>
+          </a>
+        
+        
+          <a class="share-item" href="https://www.facebook.com/sharer.php?u=http://example.com/2022/12/15/YOLOV5-7.0%E5%AE%9E%E4%BE%8B%E5%88%86%E5%89%B2onnx%E6%A8%A1%E5%9E%8B%E6%8E%A8%E7%90%86%E7%AE%80%E5%8C%96%E6%B5%81%E7%A8%8B/" target="_blank" title="Facebook">
+            <i class="iconfont icon-facebooksquare"></i>
+          </a>
+        
+      </div>
+    </div>
+  
+  
+<script src="/js/shares.js"></script>
+
+
+
+      </div>
+    </div>
+  </body>
+</html>
